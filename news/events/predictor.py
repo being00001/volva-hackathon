@@ -27,9 +27,17 @@ import sys
 import time
 from datetime import datetime, timezone, timedelta
 from typing import Optional
+from pathlib import Path
+from dotenv import load_dotenv
 
 import httpx
-from surrealdb import AsyncSurreal
+from surrealdb import AsyncSurrealDB
+
+# Load .env from script directory and project root
+_script_dir = Path(__file__).resolve().parent
+_project_root = _script_dir.parent.parent
+load_dotenv(_script_dir / ".env")
+load_dotenv(_project_root / ".env")
 
 # Configure structured logging
 logging.basicConfig(
