@@ -1,0 +1,12 @@
+# Build artifacts - only final outputs tracked
+*.mp3
+*.cast
+*.ass
+*.txt
+*_test.mp4
+*_terminal.mp4
+seg*.mp4
+test_loop*.mp4
+*.py
+startup.json
+segments.txt

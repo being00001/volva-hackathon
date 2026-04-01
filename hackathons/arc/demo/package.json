@@ -1,0 +1,16 @@
+{
+  "name": "volva-arc-demo",
+  "version": "1.0.0",
+  "description": "Volva causal prediction agent demo on Arc testnet with USDC nanopayments",
+  "type": "module",
+  "main": "arc_demo.js",
+  "scripts": {
+    "demo": "node arc_demo.js",
+    "demo:dry": "node arc_demo.js --dry-run",
+    "faucet:check": "node check_balance.js"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  },
+  "license": "MIT"
+}

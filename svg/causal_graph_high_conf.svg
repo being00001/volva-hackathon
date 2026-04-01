@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700">
+  <title>High-Confidence Causal Graph SVG</title>
+  <style>
+    .node { fill: #ADD8E6; stroke: #00008B; stroke-width: 2; }
+    .edge-high { stroke: #228B22; stroke-width: 3; fill: none; }
+    .edge-med { stroke: #FFA500; stroke-width: 2; fill: none; }
+    .edge-low { stroke: #808080; stroke-width: 1; fill: none; }
+    .label { font-family: Arial; font-size: 10px; }
+  </style>
+  <line x1="759.8076211353316" y1="200.0" x2="650.0" y2="609.8076211353316" class="edge-high"/>
+  <text x="704.9038105676658" y="404.9038105676658" class="label" text-anchor="middle">1.0</text>
+  <line x1="759.8076211353316" y1="499.99999999999994" x2="200.0" y2="350.00000000000006" class="edge-high"/>
+  <text x="479.9038105676658" y="425.0" class="label" text-anchor="middle">0.95</text>
+  <line x1="650.0" y1="609.8076211353316" x2="349.9999999999999" y2="90.19237886466851" class="edge-high"/>
+  <text x="499.99999999999994" y="350.00000000000006" class="label" text-anchor="middle">0.95</text>
+  <line x1="350.00000000000006" y1="609.8076211353316" x2="500.0" y2="50.0" class="edge-high"/>
+  <text x="425.0" y="329.9038105676658" class="label" text-anchor="middle">0.95</text>
+  <line x1="240.1923788646684" y1="199.99999999999997" x2="200.0" y2="350.00000000000006" class="edge-med"/>
+  <text x="220.0961894323342" y="275.0" class="label" text-anchor="middle">0.9</text>
+  <line x1="240.1923788646684" y1="199.99999999999997" x2="350.00000000000006" y2="609.8076211353316" class="edge-med"/>
+  <text x="295.0961894323342" y="404.9038105676658" class="label" text-anchor="middle">0.9</text>
+  <line x1="650.0" y1="609.8076211353316" x2="650.0" y2="90.1923788646684" class="edge-med"/>
+  <text x="650.0" y="350.0" class="label" text-anchor="middle">0.9</text>
+  <line x1="240.19237886466846" y1="500.0000000000001" x2="500.0" y2="50.0" class="edge-med"/>
+  <text x="370.0961894323342" y="275.00000000000006" class="label" text-anchor="middle">0.9</text>
+  <line x1="500.0" y1="650.0" x2="350.00000000000006" y2="609.8076211353316" class="edge-med"/>
+  <text x="425.0" y="629.9038105676658" class="label" text-anchor="middle">0.9</text>
+  <line x1="500.0" y1="650.0" x2="240.1923788646684" y2="199.99999999999997" class="edge-med"/>
+  <text x="370.0961894323342" y="425.0" class="label" text-anchor="middle">0.9</text>
+  <line x1="500.0" y1="650.0" x2="800.0" y2="350.0" class="edge-med"/>
+  <text x="650.0" y="500.0" class="label" text-anchor="middle">0.9</text>
+  <line x1="350.00000000000006" y1="609.8076211353316" x2="200.0" y2="350.00000000000006" class="edge-med"/>
+  <text x="275.0" y="479.9038105676658" class="label" text-anchor="middle">0.9</text>
+  <ellipse cx="500.0" cy="50.0" rx="60" ry="30" class="node"/>
+  <text x="500.0" y="54.0" text-anchor="middle" font-size="8">What Iranians make of the poss</text>
+  <ellipse cx="650.0" cy="90.1923788646684" rx="60" ry="30" class="node"/>
+  <text x="650.0" y="94.1923788646684" text-anchor="middle" font-size="8">What happened in the seconds b</text>
+  <ellipse cx="759.8076211353316" cy="200.0" rx="60" ry="30" class="node"/>
+  <text x="759.8076211353316" y="204.0" text-anchor="middle" font-size="8">'Stop, stop, stop': Listen to </text>
+  <ellipse cx="800.0" cy="350.0" rx="60" ry="30" class="node"/>
+  <text x="800.0" y="354.0" text-anchor="middle" font-size="8">Could Iranian missiles reach L</text>
+  <ellipse cx="759.8076211353316" cy="499.99999999999994" rx="60" ry="30" class="node"/>
+  <text x="759.8076211353316" y="503.99999999999994" text-anchor="middle" font-size="8">Iran war shows norms of intern</text>
+  <ellipse cx="650.0" cy="609.8076211353316" rx="60" ry="30" class="node"/>
+  <text x="650.0" y="613.8076211353316" text-anchor="middle" font-size="8">How the deadly LaGuardia Airpo</text>
+  <ellipse cx="500.0" cy="650.0" rx="60" ry="30" class="node"/>
+  <text x="500.0" y="654.0" text-anchor="middle" font-size="8">US' and Iran's options for end</text>
+  <ellipse cx="350.00000000000006" cy="609.8076211353316" rx="60" ry="30" class="node"/>
+  <text x="350.00000000000006" y="613.8076211353316" text-anchor="middle" font-size="8">Ultimatums, diplomacy and a tr</text>
+  <ellipse cx="240.19237886466846" cy="500.0000000000001" rx="60" ry="30" class="node"/>
+  <text x="240.19237886466846" y="504.0000000000001" text-anchor="middle" font-size="8">Oil falls and shares rebound a</text>
+  <ellipse cx="200.0" cy="350.00000000000006" rx="60" ry="30" class="node"/>
+  <text x="200.0" y="354.00000000000006" text-anchor="middle" font-size="8">Everyday life in Asia is being</text>
+  <ellipse cx="240.1923788646684" cy="199.99999999999997" rx="60" ry="30" class="node"/>
+  <text x="240.1923788646684" y="203.99999999999997" text-anchor="middle" font-size="8">A committed pharmacist and a h</text>
+  <ellipse cx="349.9999999999999" cy="90.19237886466851" rx="60" ry="30" class="node"/>
+  <text x="349.9999999999999" y="94.19237886466851" text-anchor="middle" font-size="8">Pilots killed in LaGuardia pla</text>
+</svg>

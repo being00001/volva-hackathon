@@ -1,0 +1,139 @@
+USE NAMESPACE volva;
+USE DATABASE causal_graph;
+
+-- Völva Causal Graph Schema (v4.2 - Enhanced Resolution Criteria)
+
+-- Define tables
+DEFINE TABLE event SCHEMAFULL;
+DEFINE FIELD content ON TABLE event TYPE string;
+DEFINE FIELD timestamp ON TABLE event TYPE datetime DEFAULT time::now();
+DEFINE FIELD verified ON TABLE event TYPE bool DEFAULT false;
+DEFINE FIELD metadata ON TABLE event TYPE object FLEXIBLE;
+
+DEFINE TABLE source SCHEMAFULL;
+DEFINE FIELD url ON TABLE source TYPE string;
+DEFINE FIELD type ON TABLE source TYPE string; -- 'rss', 'grok', 'manual'
+DEFINE FIELD reliability ON TABLE source TYPE float DEFAULT 0.5;
+
+DEFINE TABLE causal_link SCHEMAFULL;
+DEFINE FIELD from ON TABLE causal_link TYPE record<event>;
+DEFINE FIELD to ON TABLE causal_link TYPE record<event | indicator_series>;
+DEFINE FIELD confidence ON TABLE causal_link TYPE float;
+DEFINE FIELD mechanism ON TABLE causal_link TYPE string;
+DEFINE FIELD evidence ON TABLE causal_link TYPE array<record<source>>;
+DEFINE FIELD provenance ON TABLE causal_link TYPE object FLEXIBLE;
+-- Feedback Loop Fields (Phase 6)
+DEFINE FIELD feedback_history ON TABLE causal_link TYPE array DEFAULT [];
+DEFINE FIELD feedback_history.*.run_id ON TABLE causal_link TYPE string;
+DEFINE FIELD feedback_history.*.updated ON TABLE causal_link TYPE datetime;
+DEFINE FIELD feedback_history.*.market_id ON TABLE causal_link TYPE string;
+DEFINE FIELD feedback_history.*.prediction_id ON TABLE causal_link TYPE string;
+DEFINE FIELD feedback_history.*.was_correct ON TABLE causal_link TYPE bool;
+DEFINE FIELD feedback_history.*.old_confidence ON TABLE causal_link TYPE float;
+DEFINE FIELD feedback_history.*.new_confidence ON TABLE causal_link TYPE float;
+DEFINE FIELD feedback_history.*.predicted_probability ON TABLE causal_link TYPE float;
+DEFINE FIELD feedback_history.*.actual_outcome ON TABLE causal_link TYPE string;
+DEFINE FIELD total_predictions ON TABLE causal_link TYPE int DEFAULT 0;
+DEFINE FIELD correct_predictions ON TABLE causal_link TYPE int DEFAULT 0;
+
+-- Prediction and Judgement
+DEFINE TABLE predicts SCHEMAFULL;
+DEFINE FIELD agent ON TABLE predicts TYPE string;
+DEFINE FIELD source_event ON TABLE predicts TYPE record<event>; -- The event that triggered this prediction
+DEFINE FIELD causal_link_id ON TABLE predicts TYPE record<causal_link>; -- The pattern used
+DEFINE FIELD target_description ON TABLE predicts TYPE string; -- What will happen
+DEFINE FIELD probability ON TABLE predicts TYPE float;
+DEFINE FIELD depth ON TABLE predicts TYPE option<int>; -- Depth for chained predictions
+DEFINE FIELD rationale ON TABLE predicts TYPE string;
+DEFINE FIELD status ON TABLE predicts TYPE string DEFAULT 'pending'; -- 'pending', 'verified', 'failed'
+DEFINE FIELD evidence_event ON TABLE predicts TYPE option<record<event>> DEFAULT NONE; -- The event that proved/disproved it
+DEFINE FIELD timestamp ON TABLE predicts TYPE datetime DEFAULT time::now();
+DEFINE FIELD target_date_max ON TABLE predicts TYPE datetime; -- Expiry date for the prediction
+DEFINE FIELD embedding ON TABLE predicts TYPE option<array<float, 768>> DEFAULT NONE;
+DEFINE INDEX predicts_embedding ON TABLE predicts FIELDS embedding MTREE DIMENSION 768 DIST COSINE;
+
+-- Phase 4: Market Contract Integration (Lethe)
+
+DEFINE TABLE market_draft SCHEMAFULL;
+DEFINE FIELD source_prediction_id ON TABLE market_draft TYPE record<predicts>;
+DEFINE FIELD source_event_id ON TABLE market_draft TYPE record<event>;
+DEFINE FIELD causal_link_id ON TABLE market_draft TYPE record<causal_link>;
+DEFINE FIELD title ON TABLE market_draft TYPE string;
+DEFINE FIELD question ON TABLE market_draft TYPE string;
+DEFINE FIELD description ON TABLE market_draft TYPE option<string>;
+DEFINE FIELD market_type ON TABLE market_draft TYPE string DEFAULT "binary";
+DEFINE FIELD outcomes ON TABLE market_draft TYPE array<string> DEFAULT ["YES", "NO"];
+DEFINE FIELD resolution_criteria ON TABLE market_draft TYPE object;
+DEFINE FIELD resolution_criteria.type ON TABLE market_draft TYPE string;
+DEFINE FIELD resolution_criteria.rule ON TABLE market_draft TYPE string;
+DEFINE FIELD resolution_criteria.inputs ON TABLE market_draft TYPE option<object>;
+DEFINE FIELD resolution_criteria.sources ON TABLE market_draft TYPE option<array<string>>;
+DEFINE FIELD resolution_criteria.source_urls ON TABLE market_draft TYPE option<array<string>>;
+DEFINE FIELD resolution_criteria.resolve_date ON TABLE market_draft TYPE option<datetime>;
+DEFINE FIELD resolution_criteria.deadline_date ON TABLE market_draft TYPE option<datetime>;
+DEFINE FIELD resolution_criteria.logic ON TABLE market_draft TYPE option<string>;
+DEFINE FIELD resolution_criteria.notes ON TABLE market_draft TYPE option<string>;
+DEFINE FIELD open_time ON TABLE market_draft TYPE datetime;
+DEFINE FIELD close_time ON TABLE market_draft TYPE datetime;
+DEFINE FIELD resolve_time ON TABLE market_draft TYPE datetime;
+DEFINE FIELD deadline ON TABLE market_draft TYPE datetime;
+DEFINE FIELD oracle ON TABLE market_draft TYPE object;
+DEFINE FIELD oracle.predictor_probability ON TABLE market_draft TYPE float;
+DEFINE FIELD oracle.calibrated_probability ON TABLE market_draft TYPE float;
+DEFINE FIELD oracle.confidence ON TABLE market_draft TYPE float;
+DEFINE FIELD oracle.resolution_eta_hours ON TABLE market_draft TYPE option<int>;
+DEFINE FIELD oracle.risk_flags ON TABLE market_draft TYPE array<string> DEFAULT [];
+-- Feedback Loop Fields (Phase 6)
+DEFINE FIELD feedback_processed ON TABLE market_draft TYPE bool DEFAULT false;
+DEFINE FIELD outcome ON TABLE market_draft TYPE option<string> DEFAULT NONE; -- 'YES' or 'NO' when resolved
+DEFINE FIELD metadata ON TABLE market_draft TYPE object FLEXIBLE;
+DEFINE FIELD status ON TABLE market_draft TYPE string DEFAULT "draft";
+DEFINE FIELD timestamp ON TABLE market_draft TYPE datetime DEFAULT time::now();
+DEFINE FIELD embedding ON TABLE market_draft TYPE option<array<float, 768>> DEFAULT NONE;
+DEFINE INDEX market_draft_embedding ON TABLE market_draft FIELDS embedding MTREE DIMENSION 768 DIST COSINE;
+
+-- Phase 6: Time-Series Data Expansion (FRED & FMP)
+
+DEFINE TABLE indicator_series SCHEMAFULL;
+DEFINE FIELD name ON TABLE indicator_series TYPE string;
+DEFINE FIELD series_id ON TABLE indicator_series TYPE string; -- 'FRED:FEDFUNDS', 'FMP:AAPL', 'FMP:^GSPC'
+DEFINE FIELD source ON TABLE indicator_series TYPE string; -- 'FRED', 'FMP', 'FINNHUB'
+DEFINE FIELD description ON TABLE indicator_series TYPE string;
+DEFINE FIELD frequency ON TABLE indicator_series TYPE string; -- 'daily', 'monthly', 'quarterly'
+DEFINE FIELD unit ON TABLE indicator_series TYPE string; -- 'percent', 'USD', 'index'
+DEFINE FIELD metadata ON TABLE indicator_series TYPE object FLEXIBLE;
+DEFINE FIELD timestamp ON TABLE indicator_series TYPE datetime DEFAULT time::now();
+
+DEFINE TABLE indicator_observation SCHEMAFULL;
+DEFINE FIELD series_id ON TABLE indicator_observation TYPE record<indicator_series>;
+DEFINE FIELD date ON TABLE indicator_observation TYPE datetime;
+DEFINE FIELD value ON TABLE indicator_observation TYPE float;
+DEFINE FIELD change_percent ON TABLE indicator_observation TYPE option<float>;
+DEFINE FIELD metadata ON TABLE indicator_observation TYPE object FLEXIBLE;
+DEFINE FIELD timestamp ON TABLE indicator_observation TYPE datetime DEFAULT time::now();
+
+-- Phase 7: Live Signals Pivot (wrk-0307)
+-- Annotation signals: User-submitted "this caused that" causal annotations
+DEFINE TABLE annotation_signal SCHEMAFULL;
+DEFINE FIELD from_event ON TABLE annotation_signal TYPE record<event>;
+DEFINE FIELD to_event ON TABLE annotation_signal TYPE record<event>;
+DEFINE FIELD mechanism ON TABLE annotation_signal TYPE string;
+DEFINE FIELD source_user ON TABLE annotation_signal TYPE string DEFAULT 'anonymous';
+DEFINE FIELD confidence_override ON TABLE annotation_signal TYPE option<float>;
+DEFINE FIELD created_at ON TABLE annotation_signal TYPE datetime DEFAULT time::now();
+DEFINE FIELD processed ON TABLE annotation_signal TYPE bool DEFAULT false;
+DEFINE FIELD causal_link_id ON TABLE annotation_signal TYPE option<record<causal_link>> DEFAULT NONE;
+DEFINE FIELD metadata ON TABLE annotation_signal TYPE object FLEXIBLE;
+
+-- Disagreement signals: Forecast disagreement signals from Polymarket markets
+DEFINE TABLE disagreement_signal SCHEMAFULL;
+DEFINE FIELD market_slug ON TABLE disagreement_signal TYPE string;
+DEFINE FIELD market_question ON TABLE disagreement_signal TYPE string;
+DEFINE FIELD yes_price ON TABLE disagreement_signal TYPE float;
+DEFINE FIELD no_price ON TABLE disagreement_signal TYPE float;
+DEFINE FIELD imbalance_pct ON TABLE disagreement_signal TYPE float;
+DEFINE FIELD volume ON TABLE disagreement_signal TYPE float;
+DEFINE FIELD timestamp ON TABLE disagreement_signal TYPE datetime DEFAULT time::now();
+DEFINE FIELD processed ON TABLE disagreement_signal TYPE bool DEFAULT false;
+DEFINE FIELD feedback_weight ON TABLE disagreement_signal TYPE float DEFAULT 1.0;
+DEFINE FIELD metadata ON TABLE disagreement_signal TYPE object FLEXIBLE;

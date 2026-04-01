@@ -1,0 +1,2 @@
+fatal: path 'svg/causal_graph.svg' exists, but not 'causal_graph.svg'
+hint: Did you mean 'HEAD:svg/causal_graph.svg' aka 'HEAD:./causal_graph.svg'?
